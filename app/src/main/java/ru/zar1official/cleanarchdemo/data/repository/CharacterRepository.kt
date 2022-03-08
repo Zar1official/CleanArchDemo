@@ -8,7 +8,6 @@ class CharacterRepository(
     private val characterService: ApiService,
     private val characterMapper: CharacterMapper
 ) : Repository {
-    override suspend fun getAllEntities() = characterMapper.mapFromEntityList(
-        listOf(characterService.getAllCharacters())
-    )
+    override suspend fun getAllEntities() =
+        characterMapper.mapFromEntityList(characterService.getAllCharacters())
 }

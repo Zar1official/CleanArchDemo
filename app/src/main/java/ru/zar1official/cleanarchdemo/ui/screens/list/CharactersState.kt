@@ -1,5 +1,6 @@
 package ru.zar1official.cleanarchdemo.ui.screens.list
 
+import ru.zar1official.cleanarchdemo.data.network.models.CharacterEntity
 import ru.zar1official.cleanarchdemo.domain.models.Character
 
 sealed class CharactersState {
