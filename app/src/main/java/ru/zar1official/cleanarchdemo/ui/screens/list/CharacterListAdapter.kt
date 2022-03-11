@@ -1,27 +1,31 @@
 package ru.zar1official.cleanarchdemo.ui.screens.list
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import coil.transform.CircleCropTransformation
 import ru.zar1official.cleanarchdemo.R
 import ru.zar1official.cleanarchdemo.databinding.CharacterListItemBinding
 import ru.zar1official.cleanarchdemo.domain.models.Character
 
 class CharacterListAdapter(
-    private val onClick: (position: Int) -> Unit,
+    private val onClick: (character: Character) -> Unit,
 ) :
     RecyclerView.Adapter<CharacterListAdapter.CharacterViewHolder>() {
 
     private val characterList = ArrayList<Character>()
 
-    inner class CharacterViewHolder(characterView: View, clickAt: (Int) -> Unit) :
+    inner class CharacterViewHolder(characterView: View, clickAt: (Character) -> Unit) :
         RecyclerView.ViewHolder(characterView) {
 
         init {
             characterView.setOnClickListener {
-                clickAt(adapterPosition)
+                clickAt(characterList[adapterPosition])
             }
         }
 
@@ -29,7 +33,10 @@ class CharacterListAdapter(
 
         fun bindNote(character: Character) = with(binding) {
             character.run {
-
+                characterName.text = name
+                characterImage.load(image){
+                    transformations(CircleCropTransformation())
+                }
             }
         }
     }
