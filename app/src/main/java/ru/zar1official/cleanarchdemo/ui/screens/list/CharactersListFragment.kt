@@ -8,13 +8,20 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.koin.android.ext.android.inject
+import org.koin.android.scope.AndroidScopeComponent
+import org.koin.androidx.scope.fragmentScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 import ru.zar1official.cleanarchdemo.R
+import ru.zar1official.cleanarchdemo.data.notificator.Notificator
 import ru.zar1official.cleanarchdemo.databinding.FragmentCharactersListBinding
 import ru.zar1official.cleanarchdemo.domain.models.Character
 import ru.zar1official.cleanarchdemo.ui.screens.description.CharacterDescriptionFragment
 
-class CharactersListFragment : Fragment() {
+class CharactersListFragment : Fragment(), AndroidScopeComponent {
+    override val scope: Scope by fragmentScope()
     private var _binding: FragmentCharactersListBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CharactersListViewModel by viewModel()
@@ -23,6 +30,7 @@ class CharactersListFragment : Fragment() {
             viewModel.onOpenDescription(it)
         }
     }
+    private val firstNotificator: Notificator by inject(named("first_notificator"))
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +47,11 @@ class CharactersListFragment : Fragment() {
                         progressBar.visibility = View.VISIBLE
                     }
                     is CharactersState.Error -> {
-                        Toast.makeText(context, getString(R.string.error_message), Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            getString(R.string.error_message),
+                            Toast.LENGTH_LONG
+                        ).show()
                         progressBar.visibility = View.GONE
                     }
                     is CharactersState.Success -> {
@@ -52,6 +64,8 @@ class CharactersListFragment : Fragment() {
             viewModel.description.observe(viewLifecycleOwner) { character ->
                 openDescription(character)
             }
+
+            firstNotificator.notifyScreen()
         }
         return binding.root
     }
