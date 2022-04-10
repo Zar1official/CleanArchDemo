@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.android.ext.android.inject
 import org.koin.android.scope.AndroidScopeComponent
@@ -31,6 +32,7 @@ class CharactersListFragment : Fragment(), AndroidScopeComponent {
         }
     }
     private val firstNotificator: Notificator by inject(named("first_notificator"))
+    private val secondNotificator: Notificator by inject(named("second_notificator"))
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,22 +43,24 @@ class CharactersListFragment : Fragment(), AndroidScopeComponent {
                 layoutManager = LinearLayoutManager(context)
                 adapter = characterListAdapter
             }
-            viewModel.characters.observe(viewLifecycleOwner) { state ->
-                when (state) {
-                    is CharactersState.Loading -> {
-                        progressBar.visibility = View.VISIBLE
-                    }
-                    is CharactersState.Error -> {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.error_message),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        progressBar.visibility = View.GONE
-                    }
-                    is CharactersState.Success -> {
-                        progressBar.visibility = View.GONE
-                        characterListAdapter.updateData(state.data)
+            lifecycleScope.launchWhenStarted {
+                viewModel.characters.collect { state ->
+                    when (state) {
+                        is CharactersState.Loading -> {
+                            progressBar.visibility = View.VISIBLE
+                        }
+                        is CharactersState.Error -> {
+                            Toast.makeText(
+                                context,
+                                getString(R.string.error_message),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            progressBar.visibility = View.GONE
+                        }
+                        is CharactersState.Success -> {
+                            progressBar.visibility = View.GONE
+                            characterListAdapter.updateData(state.data)
+                        }
                     }
                 }
             }
@@ -66,6 +70,7 @@ class CharactersListFragment : Fragment(), AndroidScopeComponent {
             }
 
             firstNotificator.notifyScreen()
+            secondNotificator.notifyScreen()
         }
         return binding.root
     }

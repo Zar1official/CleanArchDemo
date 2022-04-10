@@ -21,7 +21,7 @@ class CharacterDescriptionFragment : Fragment(), AndroidScopeComponent {
     private val character: Character by lazy {
         arguments?.getParcelable(CHARACTER_KEY) ?: Character()
     }
-    private val notificator: Notificator by inject(named("first_notificator"))
+    private val notificator: Notificator by inject()
     private var _binding: FragmentCharacterDescriptionBinding? = null
     private val binding get() = _binding!!
 
