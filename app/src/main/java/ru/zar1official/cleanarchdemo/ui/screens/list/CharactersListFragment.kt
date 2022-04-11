@@ -63,10 +63,12 @@ class CharactersListFragment : Fragment(), AndroidScopeComponent {
                         }
                     }
                 }
-            }
 
-            viewModel.description.observe(viewLifecycleOwner) { character ->
-                openDescription(character)
+                viewModel.eventsFlow.collect {
+                    when (it) {
+                        is CharacterListEvent.OpenDescription -> openDescription(it.character)
+                    }
+                }
             }
 
             firstNotificator.notifyScreen()
