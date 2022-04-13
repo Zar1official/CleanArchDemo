@@ -1,27 +1,25 @@
 package ru.zar1official.cleanarchdemo.di
 
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
-import org.koin.core.qualifier.qualifier
-import org.koin.dsl.module
-import ru.zar1official.cleanarchdemo.data.notificator.Notificator
-import ru.zar1official.cleanarchdemo.data.notificator.NotificatorFirstImpl
-import ru.zar1official.cleanarchdemo.data.notificator.NotificatorSecondImpl
-import ru.zar1official.cleanarchdemo.ui.screens.description.CharacterDescriptionFragment
-import ru.zar1official.cleanarchdemo.ui.screens.list.CharactersListFragment
-import ru.zar1official.cleanarchdemo.ui.screens.list.CharactersListViewModel
+import android.content.Context
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
-val appModule = module {
-    viewModel<CharactersListViewModel> {
-        CharactersListViewModel(get())
-    }
+@InstallIn(SingletonComponent::class)
+@Module
+object AppModule {
+    @Qualifiers.IODispatcher
+    @Provides
+    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
-    scope<CharactersListFragment> {
-        scoped<Notificator>(qualifier = named("first_notificator"))  { NotificatorFirstImpl(context = get()) }
-        scoped<Notificator>(qualifier = named("second_notificator")) { NotificatorSecondImpl(context = get()) }
-    }
+    @Qualifiers.DefaultDispatcher
+    @Provides
+    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
-    scope<CharacterDescriptionFragment> {
-        scoped<Notificator> { NotificatorSecondImpl(context = get()) }
-    }
+    @Provides
+    fun provideContext(@ApplicationContext context: Context): Context = context
 }

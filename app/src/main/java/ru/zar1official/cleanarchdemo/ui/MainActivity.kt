@@ -3,10 +3,12 @@ package ru.zar1official.cleanarchdemo.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import dagger.hilt.android.AndroidEntryPoint
 import ru.zar1official.cleanarchdemo.R
 import ru.zar1official.cleanarchdemo.databinding.ActivityMainBinding
 import ru.zar1official.cleanarchdemo.ui.screens.list.CharactersListFragment
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 

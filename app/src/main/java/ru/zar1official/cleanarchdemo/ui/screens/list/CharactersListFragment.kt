@@ -7,32 +7,39 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.koin.android.ext.android.inject
-import org.koin.android.scope.AndroidScopeComponent
-import org.koin.androidx.scope.fragmentScope
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import ru.zar1official.cleanarchdemo.R
 import ru.zar1official.cleanarchdemo.data.notificator.Notificator
 import ru.zar1official.cleanarchdemo.databinding.FragmentCharactersListBinding
+import ru.zar1official.cleanarchdemo.di.Qualifiers
 import ru.zar1official.cleanarchdemo.domain.models.Character
 import ru.zar1official.cleanarchdemo.ui.screens.description.CharacterDescriptionFragment
+import javax.inject.Inject
 
-class CharactersListFragment : Fragment(), AndroidScopeComponent {
-    override val scope: Scope by fragmentScope()
+@AndroidEntryPoint
+class CharactersListFragment : Fragment() {
     private var _binding: FragmentCharactersListBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CharactersListViewModel by viewModel()
+
+    private val viewModel: CharactersListViewModel by viewModels()
+
     private val characterListAdapter by lazy {
         CharacterListAdapter {
             viewModel.onOpenDescription(it)
         }
     }
-    private val firstNotificator: Notificator by inject(named("first_notificator"))
-    private val secondNotificator: Notificator by inject(named("second_notificator"))
+
+    @Inject
+    @Qualifiers.FirstNotificator
+    lateinit var firstNotificator: Notificator
+
+    @Inject
+    @Qualifiers.SecondNotificator
+    lateinit var secondNotificator: Notificator
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,7 +71,7 @@ class CharactersListFragment : Fragment(), AndroidScopeComponent {
                     }
                 }
 
-                viewModel.eventsFlow.collect {
+                viewModel.eventFlow.collectLatest {
                     when (it) {
                         is CharacterListEvent.OpenDescription -> openDescription(it.character)
                     }
