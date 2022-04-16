@@ -66,6 +66,8 @@ class CharactersListFragment : Fragment(), AndroidScopeComponent {
             }
 
             firstNotificator.notifyScreen()
+
+            viewModel.onLoadCharacters()
         }
         return binding.root
     }
