@@ -1,5 +1,6 @@
 package ru.zar1official.cleanarchdemo.di
 
+import io.reactivex.disposables.CompositeDisposable
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

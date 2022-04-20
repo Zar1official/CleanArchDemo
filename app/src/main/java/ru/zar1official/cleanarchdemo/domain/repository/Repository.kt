@@ -1,8 +1,10 @@
 package ru.zar1official.cleanarchdemo.domain.repository
 
-import ru.zar1official.cleanarchdemo.data.network.models.CharacterEntity
+import io.reactivex.Single
+import io.reactivex.disposables.Disposable
+import ru.zar1official.cleanarchdemo.data.network.models.CharacterListEntity
 import ru.zar1official.cleanarchdemo.domain.models.Character
 
 interface Repository {
-    suspend fun getAllEntities(): List<Character>
+    fun getAllEntities(): Single<List<Character>>
 }

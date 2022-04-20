@@ -1,17 +1,27 @@
 package ru.zar1official.cleanarchdemo.domain.usecases
 
-import io.reactivex.Single
-import ru.zar1official.cleanarchdemo.domain.models.Character
+import android.annotation.SuppressLint
+import android.util.Log
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import ru.zar1official.cleanarchdemo.domain.repository.Repository
-import java.util.concurrent.TimeUnit
+import ru.zar1official.cleanarchdemo.ui.screens.list.CharactersState
 
 class GetAllCharactersUseCase(private val repository: Repository) {
-    fun invoke(): Single<List<Character>> {
-//        val data = kotlin.runCatching { repository.getAllEntities() }.getOrNull()
-//        return if (data != null)
-//            CharactersState.Success(data)
-//        else
-//            CharactersState.Error
-        return Single.just(listOf(Character(id = 0, name = "Test", status = "alive", image = ""))).delay(3000, TimeUnit.MILLISECONDS)
+    @SuppressLint("CheckResult")
+    fun invoke(): Observable<CharactersState> {
+        return Observable.create { emitter ->
+            repository
+                .getAllEntities()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { emitter.onNext(CharactersState.Loading) }
+                .subscribe({
+                    emitter.onNext(CharactersState.Success(it))
+                }, {
+                    emitter.onNext(CharactersState.Error)
+                })
+        }
     }
 }

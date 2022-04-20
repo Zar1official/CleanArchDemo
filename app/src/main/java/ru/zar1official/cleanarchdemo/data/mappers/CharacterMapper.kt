@@ -8,6 +8,6 @@ class CharacterMapper {
     fun mapFromEntityList(entityList: CharacterListEntity) =
         entityList.results.map { mapFromEntity(it) }
 
-    private fun mapFromEntity(entity: CharacterEntity): Character =
+    fun mapFromEntity(entity: CharacterEntity): Character =
         Character(id = entity.id, name = entity.name, status = entity.status, image = entity.image)
 }

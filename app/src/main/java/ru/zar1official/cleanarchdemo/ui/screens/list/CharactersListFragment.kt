@@ -54,7 +54,8 @@ class CharactersListFragment : Fragment(), AndroidScopeComponent {
                         ).show()
                         progressBar.visibility = View.GONE
                     }
-                    is CharactersState.Success -> {
+
+                    is CharactersState.Success-> {
                         progressBar.visibility = View.GONE
                         characterListAdapter.updateData(state.data)
                     }
