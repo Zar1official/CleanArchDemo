@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.terrakok.cicerone.Router
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import ru.zar1official.cleanarchdemo.R
@@ -17,7 +17,7 @@ import ru.zar1official.cleanarchdemo.data.notificator.Notificator
 import ru.zar1official.cleanarchdemo.databinding.FragmentCharactersListBinding
 import ru.zar1official.cleanarchdemo.di.Qualifiers
 import ru.zar1official.cleanarchdemo.domain.models.Character
-import ru.zar1official.cleanarchdemo.ui.screens.description.CharacterDescriptionFragment
+import ru.zar1official.cleanarchdemo.ui.screens.Screens
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -40,6 +40,9 @@ class CharactersListFragment : Fragment() {
     @Inject
     @Qualifiers.SecondNotificator
     lateinit var secondNotificator: Notificator
+
+    @Inject
+    lateinit var router: Router
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,19 +93,10 @@ class CharactersListFragment : Fragment() {
     }
 
     private fun openDescription(character: Character) {
-        parentFragmentManager.commit {
-            replace(
-                R.id.fragment_container,
-                CharacterDescriptionFragment.newInstance(character)
-            ).addToBackStack(
-                CHARACTER_LIST_FRAGMENT_TAG
-            )
-        }
+        router.replaceScreen(Screens.CharacterDescriptionScreen(character))
     }
 
     companion object {
-        const val CHARACTER_LIST_FRAGMENT_TAG = "character_list_fragment"
-
         @JvmStatic
         fun newInstance(): CharactersListFragment = CharactersListFragment()
     }

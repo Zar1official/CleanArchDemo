@@ -64,4 +64,6 @@ dependencies {
     // dagger-hilt
     implementation("com.google.dagger:hilt-android:$dagger_version")
     kapt("com.google.dagger:hilt-compiler:$dagger_version")
+
+    implementation("com.github.terrakok:cicerone:7.1")
 }
